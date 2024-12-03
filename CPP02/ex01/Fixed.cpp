@@ -15,9 +15,17 @@ Fixed &Fixed::operator=(const Fixed &obj) {
 	if (this != &obj)
 	{
 		std::cout << "Copy assignment operator called" << std::endl;
-		this->_fixedPointValue = obj.getRawBits();
+		this->_fixedPointValue = obj._fixedPointValue;
 	}
 	return (*this);
+}
+
+Fixed::Fixed(const int intConvert) : _fixedPointValue(intConvert << _bitsFact) {
+	std::cout << "Int constructor called" << std::endl;
+}
+
+Fixed::Fixed(const float floatConvert) : _fixedPointValue(roundf(floatConvert * ( 1 << _bitsFact))) {
+	std::cout << "Float constructor called" << std::endl;
 }
 
 Fixed::~Fixed() {
@@ -31,4 +39,17 @@ int	Fixed::getRawBits(void) const {
 
 void	Fixed::setRawBits(int const raw) {
 	_fixedPointValue = raw;
+}
+
+float	Fixed::toFloat(void) const {
+	return static_cast<float>(_fixedPointValue) / (1 << _bitsFact);
+}
+
+int	Fixed::toInt(void) const {
+	return _fixedPointValue >> _bitsFact;
+}
+
+std::ostream &operator<< (std::ostream &os, const Fixed &fixed) {
+	os << fixed.toFloat();
+	return os;
 }
